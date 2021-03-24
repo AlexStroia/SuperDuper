@@ -20,20 +20,29 @@ public class NoteService {
         return mapper.get(id);
     }
 
-    public List<Note> getAll() {
-        return mapper.getAll();
+    public List<Note> getAll(int id) {
+        return mapper.getAll(id);
     }
 
     public int delete(int id) {
         return mapper.delete(id);
     }
 
-   public int edit(NoteForm note) {
-        return mapper.edit(new Note(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription(), note.getUserId()));
+    public int edit(NoteForm note) {
+        Note newNote = new Note();
+        newNote.setNotetitle(note.getNoteTitle());
+        newNote.setNotedescription(note.getNoteDescription());
+        newNote.setUserid(note.getUserId());
+
+        return mapper.edit(newNote);
     }
 
     public int insert(NoteForm note) {
-        return mapper.insert(new Note(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription(), note.getUserId()));
+        Note newNote = new Note();
+        newNote.setNotetitle(note.getNoteTitle());
+        newNote.setNotedescription(note.getNoteDescription());
+        newNote.setUserid(note.getUserId());
+        return mapper.insert(newNote);
     }
 
 }

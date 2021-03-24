@@ -17,7 +17,7 @@ public interface FileMapper {
     @Delete("DELETE FROM FILES where fileId = #{fileId}")
     int delete(int fileId);
 
-    @Update("UPDATE FILES SET noteTitle = #{noteTitle}, noteDescription = #{noteDescription} WHERE #noteId = #{noteId}")
+    @Update("UPDATE FILES SET noteTitleN = #{noteTitle}, noteDescription = #{noteDescription} WHERE #noteId = #{noteId}")
     int edit(File file);
 
     @Insert("INSERT INTO NOTES(fileName, contentType, fileSize, userId, fileData) VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
