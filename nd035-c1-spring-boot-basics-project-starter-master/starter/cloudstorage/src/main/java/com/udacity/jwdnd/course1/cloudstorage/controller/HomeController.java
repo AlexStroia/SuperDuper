@@ -12,10 +12,8 @@ import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +44,14 @@ public class HomeController {
         credentials = new ArrayList<>();
     }
 
+    @GetMapping
+    public String homeView(Authentication authentication, NoteForm noteForm, Model model) {
+        System.out.println(authentication.getDetails());
+        model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
+        System.out.println("Notes are " + noteService.getAll(getUserId(authentication)));
+
+        return "home";
+    }
 
     public HomeController(FileService fileService, NoteService noteService, CredentialService credentialService, UserService userService) {
         this.fileService = fileService;
@@ -58,15 +64,6 @@ public class HomeController {
         String userName = authentication.getName();
         User user = userService.getUser(userName);
         return user.getUserId();
-    }
-
-    @GetMapping
-    public String homeView(Authentication authentication, NoteForm noteForm, Model model) {
-        System.out.println(authentication.getDetails());
-        model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
-        System.out.println("Notes are " + noteService.getAll(getUserId(authentication)));
-
-        return "home";
     }
 
     //PostMapping("/home")
@@ -88,14 +85,16 @@ public class HomeController {
     public String addNote(NoteForm noteForm, Model model, Authentication auth) {
 
         String error = null;
-        System.out.println("Note is " + noteForm.toString());
+        System.out.println("User id is " + getUserId(auth));
 
         noteForm.setUserId(getUserId(auth));
+        System.out.println("Note is " + noteForm.toString());
         int rowsAdded = noteService.insert(noteForm);
         if (rowsAdded < 0) {
             error = "There was an error while adding this note.";
         }
 
+        notes = noteService.getAll(getUserId(auth));
         model.addAttribute(error == null ? "uploadNoteSuccess" : "uploadNoteError", error == null ? "Your file has been added." : error);
 
         return "home";

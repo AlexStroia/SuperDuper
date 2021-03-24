@@ -87,14 +87,8 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td th:each="note : ${notes}">
-                                <button id="btnEditNote" type="button" class="btn btn-success"
-                                        th:data-id="${note.getNoteid()}"
-                                        th:data-title="${note.getNotetitle()}"
-                                        th:data-description="${note.getNotedescription()}"
-                                        th:onclick="showNoteModal(this.getAttribute('data-id'), this.getAttribute('data-title'), this.getAttribute('data-description'))">
-                                    Edit
-                                </button>
+                            <td>
+                                <button type="button" class="btn btn-success">Edit</button>
                                 <a class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row">Example Note Title</th>
