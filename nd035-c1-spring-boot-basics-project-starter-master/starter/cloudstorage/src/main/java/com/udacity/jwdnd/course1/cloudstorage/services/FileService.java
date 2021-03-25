@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -29,11 +28,6 @@ public class FileService {
 
     public int delete(String filename) {
         return mapper.delete(filename);
-    }
-
-    public int edit(FileForm file) {
-        return 0;
-     //  return mapper.edit(new File(file.getFileId(), file.getFileName(), file.getContentType(), file.getFileSize(), file.getUserId(), file.getFileData()));
     }
 
     public int insert(FileForm file) throws IOException {
