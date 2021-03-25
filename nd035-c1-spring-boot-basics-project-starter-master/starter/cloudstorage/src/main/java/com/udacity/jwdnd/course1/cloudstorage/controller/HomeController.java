@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.form.CredentialForm;
+import com.udacity.jwdnd.course1.cloudstorage.form.FileForm;
 import com.udacity.jwdnd.course1.cloudstorage.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.*;
@@ -20,7 +21,7 @@ public class HomeController {
     private final EncryptionService encryptionService;
 
     @GetMapping
-    public String homeView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
+    public String homeView(Authentication authentication, NoteForm noteForm, FileForm fileForm, CredentialForm form, Model model) {
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
         model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);

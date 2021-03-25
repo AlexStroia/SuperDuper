@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.form.CredentialForm;
+import com.udacity.jwdnd.course1.cloudstorage.form.FileForm;
 import com.udacity.jwdnd.course1.cloudstorage.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
@@ -37,7 +38,7 @@ public class NoteController {
     }
 
     @GetMapping("/note")
-    public String noteView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
+    public String noteView(Authentication authentication, NoteForm noteForm, FileForm fileForm, CredentialForm form, Model model) {
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);
         return "home";
@@ -68,7 +69,12 @@ public class NoteController {
         notes = noteService.getAll(getUserId(auth));
         model.addAttribute("notes", notes);
         model.addAttribute("encryptionService", encryptionService);
-        model.addAttribute(error == null ? "uploadNoteSuccess" : "uploadNoteError", error == null ? "Your file has been added." : error);
+
+        if(error == null) {
+            model.addAttribute("uploadNoteSuccess", true);
+        } else {
+            model.addAttribute("uploadNoteError", error);
+        }
 
         return "home";
     }

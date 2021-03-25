@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.form.CredentialForm;
+import com.udacity.jwdnd.course1.cloudstorage.form.FileForm;
 import com.udacity.jwdnd.course1.cloudstorage.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
@@ -35,20 +36,19 @@ public class CredentialController {
     }
 
     @GetMapping("/credential")
-    public String credentialView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
+    public String credentialView(Authentication authentication, NoteForm noteForm,FileForm fileForm, CredentialForm form, Model model) {
         model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);
         return "home";
     }
 
     @PostMapping("/credential/save-credential")
-    public String addCredential(CredentialForm form, NoteForm noteForm, Authentication authentication, Model model) {
+    public String addCredential(CredentialForm form, NoteForm noteForm, FileForm fileForm, Authentication authentication, Model model) {
 
         String error = null;
         encryptCredentials(form, authentication);
 
         if (form.getCredentialId() == null) {
-
             int rowsAdded = credentialService.insert(form);
             if (rowsAdded < 0) {
                 error = "There was an error while adding this form.";
@@ -61,7 +61,11 @@ public class CredentialController {
         model.addAttribute("credentials", credentials);
         model.addAttribute("encryptionService", encryptionService);
 
-        model.addAttribute(error == null ? "uploadCredentialSuccess" : "uploadCredentialError", error == null ? "Your credential has been added." : error);
+        if(error == null) {
+            model.addAttribute("uploadCredentialSuccess", true);
+        } else {
+            model.addAttribute("uploadCredentialError", error);
+        }
 
         return "home";
     }

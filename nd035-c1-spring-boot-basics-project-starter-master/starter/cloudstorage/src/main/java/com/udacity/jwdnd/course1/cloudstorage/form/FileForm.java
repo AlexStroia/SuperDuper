@@ -1,57 +1,66 @@
 package com.udacity.jwdnd.course1.cloudstorage.form;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class FileForm {
 
-    private final Integer fileId;
-    private final String fileName;
-    private final String contentType;
-    private final String fileSize;
-    private final Integer userId;
-    private final byte[] fileData;
-
-    public FileForm(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, byte[] fileData) {
-        this.fileId = fileId;
-        this.fileName = fileName;
-        this.contentType = contentType;
-        this.fileSize = fileSize;
-        this.userId = userId;
-        this.fileData = fileData;
-    }
-
-    public Integer getFileId() {
-        return fileId;
-    }
+    private Integer fileid;
+    private String fileName;
+    private String contentType;
+    private String fileSize;
+    private Integer userId;
+    private MultipartFile multipartFile;
 
     public String getFileName() {
         return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
+    }
+
+    public Integer getFileid() {
+        return fileid;
+    }
+
+    public void setFileid(Integer fileid) {
+        this.fileid = fileid;
     }
 
     public String getContentType() {
         return contentType;
     }
 
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     public String getFileSize() {
         return fileSize;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
     }
 
-    public byte[] getFileData() {
-        return fileData;
-    }
-
-    @Override
-    public String toString() {
-        return "File{" +
-                "fileId=" + fileId +
-                ", fileName='" + fileName + '\'' +
-                ", contentType='" + contentType + '\'' +
-                ", fileSize='" + fileSize + '\'' +
-                ", userId=" + userId +
-                ", fileData=" + fileData +
-                '}';
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

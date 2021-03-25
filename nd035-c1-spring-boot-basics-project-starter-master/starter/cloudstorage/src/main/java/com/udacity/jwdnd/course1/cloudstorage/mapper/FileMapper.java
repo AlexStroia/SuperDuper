@@ -8,19 +8,19 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
 
-    @Select("SELECT * FROM FILES where fileId = #{fileId}")
-    File get(int noteId);
+    @Select("SELECT * FROM FILES where fileName = #{filename}")
+    File get(String filename);
 
-    @Select("SELECT * FROM FILES")
-    List<File> getAll();
+    @Select("SELECT * FROM FILES WHERE userid = #{userId}")
+    List<File> getAll(int userId);
 
     @Delete("DELETE FROM FILES where fileId = #{fileId}")
     int delete(int fileId);
 
-    @Update("UPDATE FILES SET noteTitleN = #{noteTitle}, noteDescription = #{noteDescription} WHERE #noteId = #{noteId}")
+    //    @Update("UPDATE FILES SET noteTitleN = #{noteTitle}, noteDescription = #{noteDescription} WHERE #noteId = #{noteId}")
     int edit(File file);
 
-    @Insert("INSERT INTO NOTES(fileName, contentType, fileSize, userId, fileData) VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
+    @Insert("INSERT INTO FILES (filename, contenttype, filesize, userid, filedata) VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     int insert(File file);
 
