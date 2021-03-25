@@ -60,7 +60,7 @@
                                 <a target="_blank" class="btn btn-success">View</a>
                                 <a class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text{file.getFileName()}>ExampleFile.txt</th>
+                            <th scope="row" th:text="${file.getFileName()}"></th>
                         </tr>
                         </tbody>
                     </table>
@@ -97,8 +97,6 @@
                             <th scope="row" th:text="${note.getNotetitle()}">Example Note Title</th>
                             <td th:text="${note.getNotedescription()}">Example Note Description</td>
                         </tr>
-
-
                         </tbody>
                     </table>
                 </div>
