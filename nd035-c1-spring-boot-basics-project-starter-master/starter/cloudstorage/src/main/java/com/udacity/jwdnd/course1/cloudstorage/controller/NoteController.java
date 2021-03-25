@@ -36,8 +36,11 @@ public class NoteController {
         notes = new ArrayList<>();
     }
 
-    @GetMapping
-    public String noteView() {
+    @GetMapping("/note")
+    public String noteView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
+        model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
+        model.addAttribute("encryptionService", encryptionService);
+        model.addAttribute("activePage", "note");
         return "home";
     }
 

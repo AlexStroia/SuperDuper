@@ -34,6 +34,14 @@ public class CredentialController {
         this.encryptionService = encryptionService;
     }
 
+    @GetMapping("/credential")
+    public String credentialView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
+        model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
+        model.addAttribute("encryptionService", encryptionService);
+        model.addAttribute("activePage", "credential");
+        return "home";
+    }
+
     @PostMapping("/credential/save-credential")
     public String addCredential(CredentialForm form, NoteForm noteForm, Authentication authentication, Model model) {
 
