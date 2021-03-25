@@ -12,7 +12,6 @@ public class FileController {
 
     @GetMapping("/file")
     public String fileView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
-        model.addAttribute("activePage", "file");
         return "home";
     }
 }

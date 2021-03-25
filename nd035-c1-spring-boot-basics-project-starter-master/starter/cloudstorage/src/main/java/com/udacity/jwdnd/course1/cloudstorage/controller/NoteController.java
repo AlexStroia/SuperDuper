@@ -40,7 +40,6 @@ public class NoteController {
     public String noteView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);
-        model.addAttribute("activePage", "note");
         return "home";
     }
 

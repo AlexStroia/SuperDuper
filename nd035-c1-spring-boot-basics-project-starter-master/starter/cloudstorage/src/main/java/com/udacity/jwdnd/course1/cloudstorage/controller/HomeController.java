@@ -40,4 +40,9 @@ public class HomeController {
         User user = userService.getUser(userName);
         return user.getUserId();
     }
+
+    @ModelAttribute("navigation")
+    public String[] allMessageTypes() {
+        return new String[]{"Files", "Notes", "Credentials"};
+    }
 }
