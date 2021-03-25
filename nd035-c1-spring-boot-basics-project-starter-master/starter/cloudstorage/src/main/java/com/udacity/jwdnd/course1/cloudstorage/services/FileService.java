@@ -27,8 +27,8 @@ public class FileService {
         return mapper.getAll(userId);
     }
 
-    public int delete(int fileId) {
-        return mapper.delete(fileId);
+    public int delete(String filename) {
+        return mapper.delete(filename);
     }
 
     public int edit(FileForm file) {

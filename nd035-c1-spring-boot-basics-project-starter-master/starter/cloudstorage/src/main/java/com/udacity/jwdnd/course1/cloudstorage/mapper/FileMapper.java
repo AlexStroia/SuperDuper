@@ -14,8 +14,8 @@ public interface FileMapper {
     @Select("SELECT * FROM FILES WHERE userid = #{userId}")
     List<File> getAll(int userId);
 
-    @Delete("DELETE FROM FILES where fileId = #{fileId}")
-    int delete(int fileId);
+    @Delete("DELETE FROM FILES where filename = #{filename}")
+    int delete(String filename);
 
     //    @Update("UPDATE FILES SET noteTitleN = #{noteTitle}, noteDescription = #{noteDescription} WHERE #noteId = #{noteId}")
     int edit(File file);

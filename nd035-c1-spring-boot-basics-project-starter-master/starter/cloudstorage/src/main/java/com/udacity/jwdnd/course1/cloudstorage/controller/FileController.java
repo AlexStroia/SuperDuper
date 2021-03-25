@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
@@ -51,6 +52,13 @@ public class FileController {
             fileForm.setFileSize(String.valueOf(fileForm.getMultipartFile().getSize()));
             fileService.insert(fileForm);
         }
+        model.addAttribute("files", fileService.getAll(getUserId(auth)));
+        return "home";
+    }
+
+    @GetMapping("/file/delete{filename}")
+    public String deleteFile(@PathVariable String filename, NoteForm noteForm, CredentialForm form, FileForm fileForm, Model model, Authentication auth) throws IOException {
+        fileService.delete(filename);
         model.addAttribute("files", fileService.getAll(getUserId(auth)));
         return "home";
     }
