@@ -163,14 +163,21 @@
 
 
                         <tbody>
-                        <tr>
+                        <tr th:each="credential : ${credentials}">
                             <td>
-                                <button type="button" class="btn btn-success">Eddit</button>
-                                <a class="btn btn-danger">Delete</a>
+                                <button type="button" class="btn btn-success" id="btnEditCredential"
+                                        th:data-id="${credential.getCredentialId()}"
+                                        th:data-url="${credential.getUrl()}"
+                                        th:data-username="${credential.getUsername()}"
+                                        th:data-decryptedPassword = "${encryptionService.decryptValue(credential.password, credential.key)}"
+                                        th:onclick="showCredentialModal(this.getAttribute('data-id'), this.getAttribute('data-url'), this.getAttribute('data-username'), this.getAttribute('data-decryptedPassword'))">
+                                    Edit</button>
+                                <a class="btn btn-danger" id="aDeleteCredential"
+                                   th:href="@{/delete-credential/{credentialId}(credentialId = ${credential.getCredentialId()})}">Delete</a>
                             </td>
-                            <th scope="row">Example Credential URL</th>
-                            <td>Example Credential Username</td>
-                            <td>Example Credential Password</td>
+                            <th id="tblCredentialUrl" scope="row" th:text="${credential.getUrl()}">Example Credential URL</th>
+                            <td id="tblCredentialUsername" th:text="${credential.getUsername()}">Example Credential Username</td>
+                            <td id="tblCredentialPassword" th:text="${credential.getPassword()}">Example Credential Password</td>
                         </tr>
                         </tbody>
 
@@ -189,21 +196,21 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="#" method="POST">
+                                <form action="#" th:action = "@{/save-credential}" th:object="${credentialForm}"  method="POST">
                                     <input type="hidden" name="credentialId" id="credential-id">
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">URL</label>
-                                        <input type="text" name="url" class="form-control" id="credential-url"
+                                        <input type="text" th:field="*{url}" name="url" class="form-control" id="credential-url"
                                                maxlength="100" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Username</label>
-                                        <input type="text" name="username" class="form-control" id="credential-username"
+                                        <input type="text" name="username" th:field="*{username}" class="form-control" id="credential-username"
                                                maxlength="30" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Password</label>
-                                        <input type="text" name="password" class="form-control" id="credential-password"
+                                        <input type="text" name="password" th:field="*{password}" class="form-control" id="credential-password"
                                                maxlength="30" required>
                                     </div>
                                     <button id="credentialSubmit" type="submit" class="d-none"></button>

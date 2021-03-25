@@ -7,17 +7,16 @@ import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -29,6 +28,7 @@ public class HomeController {
     private final NoteService noteService;
     private final CredentialService credentialService;
     private final UserService userService;
+    private final EncryptionService encryptionService;
 
     private List<File> files;
     private List<Note> notes;
@@ -42,18 +42,20 @@ public class HomeController {
     }
 
     @GetMapping
-    public String homeView(Authentication authentication, NoteForm noteForm, Model model) {
+    public String homeView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
+        model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
         System.out.println("Notes are " + noteService.getAll(getUserId(authentication)));
 
         return "home";
     }
 
-    public HomeController(FileService fileService, NoteService noteService, CredentialService credentialService, UserService userService) {
+    public HomeController(FileService fileService, NoteService noteService, CredentialService credentialService, UserService userService, EncryptionService encryptionService) {
         this.fileService = fileService;
         this.noteService = noteService;
         this.credentialService = credentialService;
         this.userService = userService;
+        this.encryptionService = encryptionService;
     }
 
     private Integer getUserId(Authentication authentication) {
@@ -78,11 +80,10 @@ public class HomeController {
     }
 
     @PostMapping("/save-note")
-    public String addNote(NoteForm noteForm, Model model, Authentication auth) {
+    public String addNote(NoteForm noteForm, CredentialForm form, Model model, Authentication auth) {
 
         String error = null;
         int rowsAdded = 0;
-        System.out.println("User id is " + getUserId(auth));
 
         noteForm.setUserId(getUserId(auth));
         if (noteForm.getNoteId() != null) {
@@ -102,7 +103,7 @@ public class HomeController {
     }
 
     @GetMapping("/delete-note/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, NoteForm noteForm, Model model, Authentication auth) {
+    public String deleteNote(@PathVariable Integer noteId, NoteForm noteForm, CredentialForm credentialForm, Model model, Authentication auth) {
 
         noteService.delete(noteId);
         notes = noteService.getAll(getUserId(auth));
@@ -111,32 +112,48 @@ public class HomeController {
         return "home";
     }
 
-    //   @PostMapping("/home")
-    public String addCredential(@ModelAttribute CredentialForm form, Model model) {
+    @PostMapping("/save-credential")
+    public String addCredential(CredentialForm form, NoteForm noteForm, Authentication authentication, Model model) {
 
         String error = null;
 
-        int rowsAdded = credentialService.insert(form);
-        if (rowsAdded < 0) {
-            error = "There was an error while adding this form.";
+        if (form.getCredentialId() != null) {
+            encryptCredentials(form, authentication);
+
+            int rowsAdded = credentialService.insert(form);
+            if (rowsAdded < 0) {
+                error = "There was an error while adding this form.";
+            }
+        } else {
+            encryptCredentials(form, authentication);
+            credentialService.edit(form);
         }
+
+        credentials = credentialService.getAll(getUserId(authentication));
 
         model.addAttribute(error == null ? "uploadCredentialSuccess" : "uploadCredentialError", error == null ? "Your credential has been added." : error);
 
         return "home";
     }
 
-    //    @PostMapping("/home")
-    public String editCredential(@ModelAttribute CredentialForm form, Model model) {
+    private void encryptCredentials(CredentialForm form, Authentication authentication) {
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[16];
+        random.nextBytes(key);
+        String encodedKey = Base64.getEncoder().encodeToString(key);
+        String encryptedPassword = encryptionService.encryptValue(form.getPassword(), encodedKey);
 
-        String error = null;
+        form.setUserId(getUserId(authentication));
+        form.setKey(encodedKey);
+        form.setPassword(encryptedPassword);
+    }
 
-        int noteEdit = credentialService.edit(form);
-        if (noteEdit < 0) {
-            error = "There was an error while editing this form.";
-        }
+    @GetMapping("/delete-credential/{credentialId}")
+    public String deleteCredential(@PathVariable Integer credentialId, NoteForm noteForm, CredentialForm credentialForm, Model model, Authentication auth) {
 
-        model.addAttribute(error == null ? "uploadCredentialSuccess" : "uploadCredentialError", error == null ? "Your credential has been saved" : error);
+        credentialService.delete(credentialId);
+        credentials = credentialService.getAll(getUserId(auth));
+        model.addAttribute("credentials", credentials);
 
         return "home";
     }

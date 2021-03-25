@@ -16,23 +16,30 @@ public class CredentialService {
         this.mapper = mapper;
     }
 
-    Credential get(int id) {
+    public Credential get(int id) {
         return  mapper.get(id);
     }
 
-    List<Credential> getAll() {
-        return mapper.getAll();
+    public List<Credential> getAll(int id) {
+        return mapper.getAll(id);
     }
 
-    int delete(int id) {
+    public int delete(int id) {
         return mapper.delete(id);
     }
 
-    public int edit(CredentialForm credential) {
-        return mapper.edit(new Credential(credential.getCredentialId(),credential.getUrl(),credential.getUsername(),credential.getKey(),credential.getUserId()));
+    public void edit(CredentialForm credential) {
+      //n mapper.edit(new Credential(credential.getCredentialId(),credential.getUrl(),credential.getUsername(),credential.getKey(),credential.getUserId()));
     }
 
     public int insert(CredentialForm credential) {
-        return mapper.insert(new Credential(credential.getCredentialId(),credential.getUrl(),credential.getUsername(),credential.getKey(),credential.getUserId()));}
+        return mapper.insert(new Credential(
+                null,
+                credential.getUrl(),
+                credential.getUsername(),
+                credential.getPassword(),
+                credential.getKey(),
+                credential.getUserId()
+        ));}
 
 }
