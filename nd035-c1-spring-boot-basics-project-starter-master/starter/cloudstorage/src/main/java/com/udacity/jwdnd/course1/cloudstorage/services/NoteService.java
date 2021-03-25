@@ -28,13 +28,8 @@ public class NoteService {
         return mapper.delete(id);
     }
 
-    public int edit(NoteForm note) {
-        Note newNote = new Note();
-        newNote.setNotetitle(note.getNoteTitle());
-        newNote.setNotedescription(note.getNoteDescription());
-        newNote.setUserid(note.getUserId());
-
-        return mapper.edit(newNote);
+    public void edit(NoteForm note) {
+        mapper.edit(note.getNoteId(),note.getNoteTitle(),note.getNoteDescription());
     }
 
     public int insert(NoteForm note) {

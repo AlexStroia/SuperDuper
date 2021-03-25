@@ -86,14 +86,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:each="note : ${notes}">
                             <td>
-                                <button type="button" class="btn btn-success">Edit</button>
-                                <a class="btn btn-danger">Delete</a>
-                            </td>
-                            <th scope="row">Example Note Title</th>
-                            <td>Example Note Description</td>
+                                <button type="button" class="btn btn-success"
+                                        th:data-id="${note.getNoteid()}"
+                                        th:data-title="${note.getNotetitle()}"
+                                        th:data-description="${note.getNotedescription()}"
+                                        th:onclick="showNoteModal(this.getAttribute('data-id'), this.getAttribute('data-title'), this.getAttribute('data-description'))">
+                                    Edit
+                                </button>
+                                <a class="btn btn-danger"
+                                   th:href="@{/delete-note/{noteId}(noteId = ${note.getNoteid()})}">Delete</a>
+
+                            <th scope="row" th:text="${note.getNotetitle()}">Example Note Title</th>
+                            <td th:text="${note.getNotedescription()}">Example Note Description</td>
                         </tr>
+
+
                         </tbody>
                     </table>
                 </div>
@@ -109,7 +118,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form th:object="${noteForm}" action="#" th:action="@{/save-note}"method="POST">
+                                <form th:object="${noteForm}" action="#" th:action="@{/save-note}" method="POST">
                                     <input type="hidden" name="noteId" id="note-id">
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Title</label>
@@ -151,10 +160,12 @@
                             <th style="width: 25%" scope="col">Password</th>
                         </tr>
                         </thead>
+
+
                         <tbody>
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-success">Edit</button>
+                                <button type="button" class="btn btn-success">Eddit</button>
                                 <a class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row">Example Credential URL</th>
@@ -162,6 +173,8 @@
                             <td>Example Credential Password</td>
                         </tr>
                         </tbody>
+
+
                     </table>
                 </div>
 

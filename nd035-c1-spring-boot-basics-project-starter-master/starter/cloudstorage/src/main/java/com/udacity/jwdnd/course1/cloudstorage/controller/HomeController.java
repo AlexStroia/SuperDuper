@@ -14,10 +14,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -46,7 +43,6 @@ public class HomeController {
 
     @GetMapping
     public String homeView(Authentication authentication, NoteForm noteForm, Model model) {
-        System.out.println(authentication.getDetails());
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
         System.out.println("Notes are " + noteService.getAll(getUserId(authentication)));
 
@@ -85,17 +81,32 @@ public class HomeController {
     public String addNote(NoteForm noteForm, Model model, Authentication auth) {
 
         String error = null;
+        int rowsAdded = 0;
         System.out.println("User id is " + getUserId(auth));
 
         noteForm.setUserId(getUserId(auth));
-        System.out.println("Note is " + noteForm.toString());
-        int rowsAdded = noteService.insert(noteForm);
+        if (noteForm.getNoteId() != null) {
+            noteService.edit(noteForm);
+        } else {
+            rowsAdded = noteService.insert(noteForm);
+        }
         if (rowsAdded < 0) {
             error = "There was an error while adding this note.";
         }
 
         notes = noteService.getAll(getUserId(auth));
+        model.addAttribute("notes", notes);
         model.addAttribute(error == null ? "uploadNoteSuccess" : "uploadNoteError", error == null ? "Your file has been added." : error);
+
+        return "home";
+    }
+
+    @GetMapping("/delete-note/{noteId}")
+    public String deleteNote(@PathVariable Integer noteId, NoteForm noteForm, Model model, Authentication auth) {
+
+        noteService.delete(noteId);
+        notes = noteService.getAll(getUserId(auth));
+        model.addAttribute("notes", notes);
 
         return "home";
     }
@@ -126,21 +137,6 @@ public class HomeController {
         }
 
         model.addAttribute(error == null ? "uploadCredentialSuccess" : "uploadCredentialError", error == null ? "Your credential has been saved" : error);
-
-        return "home";
-    }
-
-    //  @PostMapping("/home")
-    public String editNote(@ModelAttribute NoteForm form, Model model) {
-
-        String error = null;
-
-        int noteEdit = noteService.edit(form);
-        if (noteEdit < 0) {
-            error = "There was an error while editing this note.";
-        }
-
-        model.addAttribute(error == null ? "uploadNoteSuccess" : "uploadNoteError", error == null ? "Your file has been edited." : error);
 
         return "home";
     }
