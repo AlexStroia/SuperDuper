@@ -12,12 +12,12 @@ public class CredentialService {
 
     private final CredentialMapper mapper;
 
-    public CredentialService( CredentialMapper  mapper) {
+    public CredentialService(CredentialMapper mapper) {
         this.mapper = mapper;
     }
 
     public Credential get(int id) {
-        return  mapper.get(id);
+        return mapper.get(id);
     }
 
     public List<Credential> getAll(int id) {
@@ -29,7 +29,13 @@ public class CredentialService {
     }
 
     public void edit(CredentialForm credential) {
-      //n mapper.edit(new Credential(credential.getCredentialId(),credential.getUrl(),credential.getUsername(),credential.getKey(),credential.getUserId()));
+        mapper.edit(new Credential(
+                credential.getCredentialId(),
+                credential.getUrl(),
+                credential.getUsername(),
+                credential.getPassword(),
+                credential.getKey(),
+                credential.getUserId()));
     }
 
     public int insert(CredentialForm credential) {
@@ -40,6 +46,7 @@ public class CredentialService {
                 credential.getPassword(),
                 credential.getKey(),
                 credential.getUserId()
-        ));}
+        ));
+    }
 
 }

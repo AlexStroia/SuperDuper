@@ -45,8 +45,7 @@ public class HomeController {
     public String homeView(Authentication authentication, NoteForm noteForm, CredentialForm form, Model model) {
         model.addAttribute("notes", noteService.getAll(getUserId(authentication)));
         model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
-        System.out.println("Notes are " + noteService.getAll(getUserId(authentication)));
-
+        model.addAttribute("encryptionService", encryptionService);
         return "home";
     }
 
@@ -62,21 +61,6 @@ public class HomeController {
         String userName = authentication.getName();
         User user = userService.getUser(userName);
         return user.getUserId();
-    }
-
-    //PostMapping("/home")
-    public String addFile(@ModelAttribute FileForm form, Model model) {
-
-        String error = null;
-
-        int rowsAdded = fileService.insert(form);
-        if (rowsAdded < 0) {
-            error = "There was an error while adding this file.";
-        }
-
-        model.addAttribute(error == null ? "uploadFileSuccess" : "uploadFileError", error == null ? "Your file has been added." : error);
-
-        return "home";
     }
 
     @PostMapping("/save-note")
@@ -97,6 +81,7 @@ public class HomeController {
 
         notes = noteService.getAll(getUserId(auth));
         model.addAttribute("notes", notes);
+        model.addAttribute("encryptionService", encryptionService);
         model.addAttribute(error == null ? "uploadNoteSuccess" : "uploadNoteError", error == null ? "Your file has been added." : error);
 
         return "home";
@@ -116,20 +101,21 @@ public class HomeController {
     public String addCredential(CredentialForm form, NoteForm noteForm, Authentication authentication, Model model) {
 
         String error = null;
+        encryptCredentials(form, authentication);
 
-        if (form.getCredentialId() != null) {
-            encryptCredentials(form, authentication);
+        if (form.getCredentialId() == null) {
 
             int rowsAdded = credentialService.insert(form);
             if (rowsAdded < 0) {
                 error = "There was an error while adding this form.";
             }
         } else {
-            encryptCredentials(form, authentication);
             credentialService.edit(form);
         }
 
         credentials = credentialService.getAll(getUserId(authentication));
+        model.addAttribute("credentials", credentials);
+        model.addAttribute("encryptionService", encryptionService);
 
         model.addAttribute(error == null ? "uploadCredentialSuccess" : "uploadCredentialError", error == null ? "Your credential has been added." : error);
 
