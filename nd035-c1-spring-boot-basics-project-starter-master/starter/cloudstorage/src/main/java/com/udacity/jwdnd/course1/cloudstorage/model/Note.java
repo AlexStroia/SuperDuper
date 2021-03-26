@@ -6,6 +6,13 @@ public class Note {
     String notedescription;
     Integer userid;
 
+    public Note(Integer noteid, String notetitle, String notedescription, Integer userid) {
+        this.noteid = noteid;
+        this.notetitle = notetitle;
+        this.notedescription = notedescription;
+        this.userid = userid;
+    }
+
     public void setNoteid(Integer noteid) {
         this.noteid = noteid;
     }

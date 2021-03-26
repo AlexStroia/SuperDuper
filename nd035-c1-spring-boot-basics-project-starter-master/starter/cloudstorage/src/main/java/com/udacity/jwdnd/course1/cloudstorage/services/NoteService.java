@@ -29,11 +29,11 @@ public class NoteService {
     }
 
     public void edit(NoteForm note) {
-        mapper.edit(note.getNoteId(),note.getNoteTitle(),note.getNoteDescription());
+        mapper.edit(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription());
     }
 
     public int insert(NoteForm note) {
-        Note newNote = new Note();
+        Note newNote = new Note(0, note.getNoteTitle(), note.getNoteDescription(), 0);
         newNote.setNotetitle(note.getNoteTitle());
         newNote.setNotedescription(note.getNoteDescription());
         newNote.setUserid(note.getUserId());
