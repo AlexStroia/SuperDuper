@@ -13,10 +13,10 @@ public interface CredentialMapper {
     @Select("SELECT * FROM CREDENTIALS WHERE userId = #{userId}")
     List<Credential> getAll(int userId);
 
-    @Delete("DELETE FROM CREDENTIALS where credentialId = #{credentialId}")
+    @Delete("DELETE FROM CREDENTIALS WHERE credentialId = #{credentialId}")
     int delete(int credentialId);
 
-    @Update("UPDATE CREDENTIALS SET credentialId = #{credentialId}, url = #{url}, username = #{url}, key= #{key} WHERE #userId = #{userId}")
+    @Update("UPDATE CREDENTIALS SET url = #{url}, key = #{key}, password = #{password}, username = #{username} WHERE credentialid = #{credentialId}")
     int edit(Credential credential);
 
     @Insert("INSERT INTO CREDENTIALS (url, username, key, password, userid) VALUES(#{url}, #{username}, #{key}, #{password}, #{userId})")

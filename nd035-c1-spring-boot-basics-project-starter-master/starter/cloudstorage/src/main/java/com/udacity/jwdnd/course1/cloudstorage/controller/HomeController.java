@@ -36,7 +36,7 @@ public class HomeController {
         this.encryptionService = encryptionService;
     }
 
-    private Integer getUserId(Authentication authentication) {
+    private Integer getUserId(@org.jetbrains.annotations.NotNull Authentication authentication) {
         String userName = authentication.getName();
         User user = userService.getUser(userName);
         return user.getUserId();

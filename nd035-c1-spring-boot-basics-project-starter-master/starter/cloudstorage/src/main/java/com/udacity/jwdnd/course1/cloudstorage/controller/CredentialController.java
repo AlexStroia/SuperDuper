@@ -4,11 +4,9 @@ import com.udacity.jwdnd.course1.cloudstorage.form.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.form.FileForm;
 import com.udacity.jwdnd.course1.cloudstorage.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,7 +22,6 @@ import java.util.List;
 @Controller("/credential")
 public class CredentialController {
 
-    private List<Credential> credentials;
     private final UserService userService;
     private final CredentialService credentialService;
     private final EncryptionService encryptionService;
@@ -36,7 +33,7 @@ public class CredentialController {
     }
 
     @GetMapping("/credential")
-    public String credentialView(Authentication authentication, NoteForm noteForm,FileForm fileForm, CredentialForm form, Model model) {
+    public String credentialView(Authentication authentication, NoteForm noteForm, FileForm fileForm, CredentialForm form, Model model) {
         model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);
         return "home";
@@ -44,26 +41,45 @@ public class CredentialController {
 
     @PostMapping("/credential/save-credential")
     public String addCredential(CredentialForm form, NoteForm noteForm, FileForm fileForm, Authentication authentication, Model model) {
-
+        System.out.println("Credential is " + form.toString());
         String error = null;
-        encryptCredentials(form, authentication);
+        boolean isEdit = false;
 
-        if (form.getCredentialId() == null) {
+        List<Credential> credentials = credentialService.getAll(getUserId(authentication));
+        for (Credential credential : credentials) {
+            if (credential.getCredentialId().equals(form.getCredentialId())) {
+                isEdit = true;
+                break;
+            }
+        }
+
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[16];
+        random.nextBytes(key);
+        String encodedKey = Base64.getEncoder().encodeToString(key);
+        String encryptedPassword = encryptionService.encryptValue(form.getPassword(), encodedKey);
+
+        form.setUserId(getUserId(authentication));
+        form.setKey(encodedKey);
+        form.setPassword(encryptedPassword);
+
+        if (!isEdit) {
             int rowsAdded = credentialService.insert(form);
             if (rowsAdded < 0) {
                 error = "There was an error while adding this form.";
             }
         } else {
+            Credential credential = credentialService.get(getUserId(authentication));
+            System.out.println("Credential from db is " + credential.toString());
+            form.setUserId(credential.getUserId());
+            System.out.println("Credential form is " + form.toString());
             credentialService.edit(form);
         }
 
-        credentials = credentialService.getAll(getUserId(authentication));
-        model.addAttribute("credentials", credentials);
+        model.addAttribute("credentials", credentialService.getAll(getUserId(authentication)));
         model.addAttribute("encryptionService", encryptionService);
 
-        if(error == null) {
-            model.addAttribute("uploadCredentialSuccess", true);
-        } else {
+        if (error != null) {
             model.addAttribute("uploadCredentialError", error);
         }
 
@@ -76,24 +92,11 @@ public class CredentialController {
         return user.getUserId();
     }
 
-    private void encryptCredentials(CredentialForm form, Authentication authentication) {
-        SecureRandom random = new SecureRandom();
-        byte[] key = new byte[16];
-        random.nextBytes(key);
-        String encodedKey = Base64.getEncoder().encodeToString(key);
-        String encryptedPassword = encryptionService.encryptValue(form.getPassword(), encodedKey);
-
-        form.setUserId(getUserId(authentication));
-        form.setKey(encodedKey);
-        form.setPassword(encryptedPassword);
-    }
-
     @GetMapping("/credential/delete-credential/{credentialId}")
-    public String deleteCredential(@PathVariable Integer credentialId, NoteForm noteForm, CredentialForm credentialForm, Model model, Authentication auth) {
+    public String deleteCredential(@PathVariable Integer credentialId, NoteForm noteForm, CredentialForm credentialForm, FileForm fileform, Model model, Authentication auth) {
 
         credentialService.delete(credentialId);
-        credentials = credentialService.getAll(getUserId(auth));
-        model.addAttribute("credentials", credentials);
+        model.addAttribute("credentials", credentialService.getAll(getUserId(auth)));
 
         return "home";
     }

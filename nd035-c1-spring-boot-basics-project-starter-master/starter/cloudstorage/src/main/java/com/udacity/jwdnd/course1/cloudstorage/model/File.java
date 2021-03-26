@@ -30,8 +30,6 @@ public class File {
         return fileName;
     }
 
-
-
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }

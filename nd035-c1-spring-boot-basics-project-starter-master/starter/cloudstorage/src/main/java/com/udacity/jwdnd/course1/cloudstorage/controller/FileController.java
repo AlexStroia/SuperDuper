@@ -53,6 +53,7 @@ public class FileController {
             fileForm.setContentType(fileForm.getMultipartFile().getContentType());
             fileForm.setFileSize(String.valueOf(fileForm.getMultipartFile().getSize()));
             fileService.insert(fileForm);
+            model.addAttribute("fileFormSuccess", true);
         }
         model.addAttribute("files", fileService.getAll(getUserId(auth)));
         return "home";

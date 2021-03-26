@@ -67,12 +67,13 @@ public class CredentialForm {
 
     @Override
     public String toString() {
-        return "Credential{" +
+        return "CredentialForm{" +
                 "credentialId=" + credentialId +
                 ", url='" + url + '\'' +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", key='" + key + '\'' +
-                ", userId='" + userId + '\'' +
+                ", userId=" + userId +
                 '}';
     }
 }

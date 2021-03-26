@@ -8,13 +8,13 @@ import java.util.List;
 @Mapper
 public interface NoteMapper {
 
-    @Select("SELECT * FROM NOTES where noted = #{noteid}")
+    @Select("SELECT * FROM NOTES WHERE noteid = #{noteid}")
     Note get(int noteId);
 
-    @Select("SELECT * FROM NOTES where userid = #{userid}")
+    @Select("SELECT * FROM NOTES WHERE userid = #{userid}")
     List<Note> getAll(int userid);
 
-    @Delete("DELETE FROM NOTES where noteid = #{noteid}")
+    @Delete("DELETE FROM NOTES WHERE noteid = #{noteid}")
     int delete(int noteId);
 
     @Update("UPDATE NOTES SET notetitle = #{title}, notedescription = #{description} WHERE noteid = #{noteId}")

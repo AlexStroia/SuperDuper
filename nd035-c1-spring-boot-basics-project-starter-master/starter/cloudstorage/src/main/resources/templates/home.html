@@ -30,6 +30,10 @@
             <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
                 <form th:object="${fileForm}" action="#" th:action="@{/file/upload}" enctype="multipart/form-data"
                       method="POST">
+                    <div id="files-success-msg" th:if="${fileFormSuccess}" class="alert alert-dark">
+                        You successfully added a new file.
+                    </div>
+
                     <div id="file-error-msg" th:if="${fileFormError}" class="alert alert-danger">
                         <span th:text="${fileFormError}"></span>
                     </div>
@@ -77,6 +81,17 @@
                         onclick="showNoteModal()">
                     + Add a New Note
                 </button>
+
+                <div id="notes-success-msg" th:if="${uploadCredentialSuccess}" class="alert alert-dark">
+                    You successfully added a new credential.
+                </div>
+
+                <div id="notes-success-update-msg" th:if="${uploadCredentialUpdateSuccess}" class="alert alert-dark">
+                    You updated the credential.
+                </div>
+                <div id="notes-error-msg" th:if="${uploadNoteError}" class="alert alert-danger">
+                    <span th:text="${uploadNoteError}"></span>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped" id="userTable">
@@ -150,6 +165,13 @@
                         onclick="showCredentialModal()">
                     + Add a New Credential
                 </button>
+                <div id="success-msg" th:if="${uploadCredentialSuccess}" class="alert alert-dark">
+                    You successfully added a new credential
+                </div>
+
+                <div id="credential-error-msg" th:if="${uploadCredentialError}" class="alert alert-danger">
+                    <span th:text="${uploadCredentialError}"></span>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped" th:object="${credentials}" id="credentialTable">
