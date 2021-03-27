@@ -29,14 +29,11 @@ public class Signup {
     @FindBy(id = "login-link")
     private WebElement toLoginBtn;
 
-    private final JavascriptExecutor javascriptExecutor;
-
     WebDriver driver;
 
     public Signup(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        javascriptExecutor = (JavascriptExecutor) driver;
     }
 
 

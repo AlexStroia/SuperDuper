@@ -33,7 +33,6 @@ public class NoteTab {
     @FindBy(id = "note-edit")
     private WebElement noteEditBtn;
 
-
     private WebDriver driver;
 
 
