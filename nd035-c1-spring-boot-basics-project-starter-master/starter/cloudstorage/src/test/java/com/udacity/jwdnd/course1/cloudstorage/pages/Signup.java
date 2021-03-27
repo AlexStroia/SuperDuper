@@ -43,15 +43,7 @@ public class Signup {
         PageFactory.initElements(driver, this);
         javascriptExecutor = (JavascriptExecutor) driver;
     }
-//
-//    public void signUp(String firstname, String lastname, String username, String password) {
-//        javascriptExecutor.executeScript("arguments[0].value='" + firstname + "';", inputFirstName);
-//        javascriptExecutor.executeScript("arguments[0].value='" + lastname + "';", inputLastName);
-//        javascriptExecutor.executeScript("arguments[0].value='" + username + "';", inputUserName);
-//        javascriptExecutor.executeScript("arguments[0].value='" + password + "';", inputPassword);
-//        javascriptExecutor.executeScript("arguments[0].click();", submitButton);
-//        Assertions.assertEquals("Sign Up", submitButton.getText());
-//    }
+
 
     public void signup(String firstname, String lastname, String username, String password) {
         Assertions.assertEquals("Sign Up", driver.getTitle());

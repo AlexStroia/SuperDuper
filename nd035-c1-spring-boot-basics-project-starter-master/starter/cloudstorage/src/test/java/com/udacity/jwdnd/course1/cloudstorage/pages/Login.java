@@ -25,9 +25,13 @@ public class Login {
     }
 
     public void login(String username, String password) {
-        javascriptExecutor.executeScript("arguments[0].value='" + username + "';", inputUserName);
-        javascriptExecutor.executeScript("arguments[0].value='" + password + "';", inputUserName);
-        javascriptExecutor.executeScript("arguments[0].click();", submitButton);
+        inputUserName.clear();
+        inputPassword.clear();
+
+        inputUserName.sendKeys(username);
+        inputPassword.sendKeys(password);
         Assertions.assertEquals("Login", submitButton.getText());
+
+        submitButton.click();
     }
 }
