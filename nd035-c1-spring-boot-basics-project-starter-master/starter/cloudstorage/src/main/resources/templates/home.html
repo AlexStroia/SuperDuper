@@ -81,14 +81,6 @@
                         onclick="showNoteModal()">
                     + Add a New Note
                 </button>
-
-                <div id="notes-success-msg" th:if="${uploadCredentialSuccess}" class="alert alert-dark">
-                    You successfully added a new credential.
-                </div>
-
-                <div id="notes-success-update-msg" th:if="${uploadCredentialUpdateSuccess}" class="alert alert-dark">
-                    You updated the credential.
-                </div>
                 <div id="notes-error-msg" th:if="${uploadNoteError}" class="alert alert-danger">
                     <span th:text="${uploadNoteError}"></span>
                 </div>
@@ -115,8 +107,10 @@
                                 <a class="btn btn-danger" id="note-delete"
                                    th:href="@{/note/delete-note/{noteId}(noteId = ${note.getNoteid()})}">Delete</a>
 
-                            <th scope="row" th:text="${note.getNotetitle()}" class="note-title" >Example Note Title</th>
-                            <td th:text="${note.getNotedescription()}" class="note-description">Example Note Description</td>
+                            <th scope="row" th:text="${note.getNotetitle()}" class="note-title">Example Note Title</th>
+                            <td th:text="${note.getNotedescription()}" class="note-description">Example Note
+                                Description
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -167,9 +161,6 @@
                         onclick="showCredentialModal()">
                     + Add a New Credential
                 </button>
-                <div id="success-msg" th:if="${uploadCredentialSuccess}" class="alert alert-dark">
-                    You successfully added a new credential
-                </div>
 
                 <div id="credential-error-msg" th:if="${uploadCredentialError}" class="alert alert-danger">
                     <span th:text="${uploadCredentialError}"></span>

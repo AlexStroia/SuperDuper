@@ -70,9 +70,7 @@ public class NoteController {
         model.addAttribute("notes", notes);
         model.addAttribute("encryptionService", encryptionService);
 
-        if(error == null) {
-            model.addAttribute("uploadNoteSuccess", true);
-        } else {
+        if (error != null) {
             model.addAttribute("uploadNoteError", error);
         }
 
@@ -80,7 +78,7 @@ public class NoteController {
     }
 
     @GetMapping("/note/delete-note/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, NoteForm noteForm, CredentialForm credentialForm, FileForm form,Model model, Authentication auth) {
+    public String deleteNote(@PathVariable Integer noteId, NoteForm noteForm, CredentialForm credentialForm, FileForm form, Model model, Authentication auth) {
 
         noteService.delete(noteId);
         notes = noteService.getAll(getUserId(auth));
