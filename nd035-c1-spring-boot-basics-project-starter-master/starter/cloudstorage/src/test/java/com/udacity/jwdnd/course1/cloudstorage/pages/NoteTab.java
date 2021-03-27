@@ -1,6 +1,5 @@
 package com.udacity.jwdnd.course1.cloudstorage.pages;
 
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,6 +26,13 @@ public class NoteTab {
 
     @FindBy(id = "note-save")
     private WebElement noteSaveBtn;
+
+    @FindBy(id = "note-delete")
+    private WebElement noteDeleteBtn;
+
+    @FindBy(id = "note-edit")
+    private WebElement noteEditBtn;
+
 
     private WebDriver driver;
 
@@ -59,29 +65,19 @@ public class NoteTab {
         WebElement noteRow = getNoteRow(oldTitle, oldDescription);
         if (noteRow == null)
             return false;
-        noteRow.findElement(By.className("note-edit")).click();
+        noteEditBtn.click();
         new WebDriverWait(driver, 500).until(ExpectedConditions.elementToBeClickable(noteSaveBtn));
         noteTitleField.clear();
         noteDescriptionField.clear();
         noteTitleField.sendKeys(newTitle);
         noteDescriptionField.sendKeys(newDescription);
         noteSaveBtn.click();
-
         return true;
     }
 
-    public boolean deleteNote(String title, String description) {
+    public void deleteNote(String title, String description) {
         WebElement noteRow = getNoteRow(title, description);
-        if (noteRow == null) return false;
-        noteRow.findElement(By.className("note-delete")).click();
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, 1);
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Throwable e) {
-            System.err.println("Error came while waiting for the alert popup. " + e.getMessage());
-            return false;
-        }
-        return true;
+        if (noteRow == null) return;
+        noteDeleteBtn.click();
     }
 }

@@ -1,21 +1,15 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.pages.Home;
-import com.udacity.jwdnd.course1.cloudstorage.pages.Login;
-import com.udacity.jwdnd.course1.cloudstorage.pages.NoteTab;
-import com.udacity.jwdnd.course1.cloudstorage.pages.Signup;
+import com.udacity.jwdnd.course1.cloudstorage.pages.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
@@ -105,5 +99,69 @@ class CloudStorageApplicationTests {
         noteTab.addNote("New note", "New note");
         noteTab.editNote("New note", "New note", "Other note", "Other note");
         assertNotNull(noteTab.getNoteRow("Other note", "Other note"));
+    }
+
+    @Test
+    public void deleteNote() {
+        signup();
+        login();
+
+        this.driver.get("http://localhost:" + this.port + "/");
+        Home home = new Home(driver);
+        home.openNotesTab();
+        NoteTab noteTab = new NoteTab(driver);
+        noteTab.addNote("New note", "New note");
+        noteTab.deleteNote("New note", "New note");
+        assertNull(noteTab.getNoteRow("New note","New note"));
+    }
+
+    @Test
+    public void addCredential() {
+        signup();
+        login();
+        String password = "password";
+        this.driver.get("http://localhost:" + this.port + "/");
+        Home home = new Home(driver);
+        home.openCredentialsTab();
+        CredentialTab credentialTab = new CredentialTab(driver);
+        credentialTab.addCredential("www.udacity.com","CREDENTIAL",password);
+
+        WebElement credentialRow = credentialTab.getCredentialRow("www.udacity.com", "CREDENTIAL");
+        assertNull(credentialRow);
+        String credentialPassword = credentialTab.getCredentialPassword();
+        assertEquals(password,credentialPassword);
+    }
+
+    @Test
+    public void editCredential() {
+        signup();
+        login();
+        String password = "oldpass";
+        String newPassword = "newpass";
+        this.driver.get("http://localhost:" + this.port + "/");
+        Home home = new Home(driver);
+        home.openCredentialsTab();
+        CredentialTab credentialTab = new CredentialTab(driver);
+        credentialTab.addCredential("www.udacity.com","CREDENTIAL",password);
+        credentialTab.editCredential("www.udacity.com","CREDENTIAL","www.google.com","My USERNAME",newPassword);
+        String credentialPassword = credentialTab.getCredentialPassword();
+        assertNotNull(credentialTab.getCredentialRow("www.google.com", "My USERNAME"));
+        assertNotEquals(newPassword,credentialPassword);
+    }
+
+    @Test
+    public void deleteCredential() {
+        signup();
+        login();
+
+        this.driver.get("http://localhost:" + this.port + "/");
+        Home home = new Home(driver);
+        home.openCredentialsTab();
+        CredentialTab credentialTab = new CredentialTab(driver);
+        credentialTab.addCredential("www.udacity.com","CREDENTIAL","CREDENTIAL");
+        credentialTab.deleteCredential("www.udacity.com","CREDENTIAL");
+
+        assertNull(credentialTab.getCredentialRow("www.google.com", "My USERNAME"));
+
     }
 }
