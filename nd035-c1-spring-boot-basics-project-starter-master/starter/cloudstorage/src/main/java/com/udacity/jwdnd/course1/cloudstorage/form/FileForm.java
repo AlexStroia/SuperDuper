@@ -63,4 +63,16 @@ public class FileForm {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "FileForm{" +
+                "fileid=" + fileid +
+                ", fileName='" + fileName + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", fileSize='" + fileSize + '\'' +
+                ", userId=" + userId +
+                ", multipartFile=" + multipartFile +
+                '}';
+    }
 }

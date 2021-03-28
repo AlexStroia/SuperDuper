@@ -70,9 +70,7 @@ public class CredentialController {
             }
         } else {
             Credential credential = credentialService.get(getUserId(authentication));
-            System.out.println("Credential from db is " + credential.toString());
             form.setUserId(credential.getUserId());
-            System.out.println("Credential form is " + form.toString());
             credentialService.edit(form);
         }
 
@@ -81,6 +79,8 @@ public class CredentialController {
 
         if (error != null) {
             model.addAttribute("uploadCredentialError", error);
+        } else {
+            model.addAttribute("uploadCredentialSuccess","You succesfully added a new credential");
         }
 
         return "home";
@@ -94,8 +94,14 @@ public class CredentialController {
 
     @GetMapping("/credential/delete-credential/{credentialId}")
     public String deleteCredential(@PathVariable Integer credentialId, NoteForm noteForm, CredentialForm credentialForm, FileForm fileform, Model model, Authentication auth) {
+        int rows = credentialService.delete(credentialId);
+        System.out.println("Rows" + rows);
+        if(rows < 0) {
+            model.addAttribute("uploadCredentialError","An error has occured while deleting this credential");
+        } else {
+            model.addAttribute("uploadCredentialSuccess","You successfully deleted this credential");
+        }
 
-        credentialService.delete(credentialId);
         model.addAttribute("credentials", credentialService.getAll(getUserId(auth)));
 
         return "home";

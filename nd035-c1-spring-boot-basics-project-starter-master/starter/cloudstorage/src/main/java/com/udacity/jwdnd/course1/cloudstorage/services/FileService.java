@@ -31,16 +31,8 @@ public class FileService {
     }
 
     public int insert(FileForm file) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int nRead;
-        byte[] data = new byte[1024];
-        while ((nRead = file.getMultipartFile().getInputStream().read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-        buffer.flush();
-        byte[] fileData = buffer.toByteArray();
 
-        return mapper.insert(new File(null, file.getFileName(), file.getContentType(), file.getFileSize(), file.getUserId(), fileData));
+        return mapper.insert(new File(null, file.getFileName(), file.getContentType(), file.getFileSize(), file.getUserId(), file.getMultipartFile().getBytes()));
     }
 
 }

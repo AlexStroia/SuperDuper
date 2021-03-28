@@ -11,15 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
-@Controller("/file")
+@Controller("/")
 public class FileController {
 
     private final FileService fileService;
@@ -36,24 +33,29 @@ public class FileController {
     }
 
     @PostMapping("/file/upload")
-    public String addNote(NoteForm noteForm, CredentialForm form, FileForm fileForm, Model model, Authentication auth) throws IOException {
+    public String addFile(NoteForm noteForm, CredentialForm form, @ModelAttribute("fileForm") FileForm fileForm, Model model, Authentication auth) throws IOException {
         boolean isNameUnique = true;
 
-        List<File> files = fileService.getAll(getUserId(auth));
-        for (File file : files) {
-            if (file.getFileName().equals(fileForm.getMultipartFile().getOriginalFilename())) {
-                isNameUnique = false;
+        if (fileForm.getMultipartFile().getOriginalFilename() != null && !fileForm.getMultipartFile().getOriginalFilename().isEmpty()) {
+            List<File> files = fileService.getAll(getUserId(auth));
+            for (File file : files) {
+                if (file.getFileName().equals(fileForm.getMultipartFile().getOriginalFilename())) {
+                    isNameUnique = false;
+                }
+            }
+
+            if (isNameUnique) {
+                fileForm.setFileName(fileForm.getMultipartFile().getOriginalFilename());
+                fileForm.setUserId(getUserId(auth));
+                fileForm.setContentType(fileForm.getMultipartFile().getContentType());
+                fileForm.setFileSize(String.valueOf(fileForm.getMultipartFile().getSize()));
+                fileService.insert(fileForm);
+                model.addAttribute("fileFormSuccess", true);
+            } else {
                 model.addAttribute("fileFormError", "Please upload a file with a different name");
             }
-        }
-
-        if (isNameUnique) {
-            fileForm.setFileName(fileForm.getMultipartFile().getOriginalFilename());
-            fileForm.setUserId(getUserId(auth));
-            fileForm.setContentType(fileForm.getMultipartFile().getContentType());
-            fileForm.setFileSize(String.valueOf(fileForm.getMultipartFile().getSize()));
-            fileService.insert(fileForm);
-            model.addAttribute("fileFormSuccess", true);
+        } else {
+            model.addAttribute("fileFormError", "Please select a file to upload");
         }
         model.addAttribute("files", fileService.getAll(getUserId(auth)));
         return "home";
