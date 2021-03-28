@@ -18,7 +18,6 @@ Demonstration of coding style and design patterns.
 <br/>
 Unit testing.
 <br/>
-The application runs on Android 5.0 and above.
 
 ### Built With
 * [IntelliJ](https://www.jetbrains.com/idea/)
