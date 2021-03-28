@@ -41,7 +41,7 @@ public class SignupController {
         }
 
         if (signupError == null) {
-            model.addAttribute("signupSuccess", true);
+            redirectAttributes.addFlashAttribute("signupSuccess", true);
             return "redirect:/login";
         } else {
             model.addAttribute("signupError", signupError);
