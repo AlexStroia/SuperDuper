@@ -185,7 +185,7 @@
                         <tr class="credential-row" th:each="credential : ${credentials}">
                             <td>
                                 <!--/*@thymesVar id="decryptValue" type=""*/-->
-                                <button type="button" class="btn btn-success" id="btnEditCredential"
+                                <button id="credential-edit" type="button" class="btn btn-success"
                                         th:data-id="${credential.getCredentialId()}"
                                         th:data-url="${credential.getUrl()}"
                                         th:data-username="${credential.getUsername()}"

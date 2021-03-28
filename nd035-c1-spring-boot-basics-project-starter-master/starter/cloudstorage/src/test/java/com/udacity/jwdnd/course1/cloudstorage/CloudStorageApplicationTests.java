@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -84,7 +86,9 @@ class CloudStorageApplicationTests {
         home.openNotesTab();
         NoteTab noteTab = new NoteTab(driver);
         noteTab.addNote("New note", "New note");
-        assertNotNull(noteTab.getNoteRow("New note", "New note"));
+
+        String text  = noteTab.getNoteRowTitle();
+        assertEquals("New note", text);
     }
 
     @Test
@@ -97,8 +101,10 @@ class CloudStorageApplicationTests {
         home.openNotesTab();
         NoteTab noteTab = new NoteTab(driver);
         noteTab.addNote("New note", "New note");
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         noteTab.editNote("New note", "New note", "Other note", "Other note");
-        assertNotNull(noteTab.getNoteRow("Other note", "Other note"));
+        String newNoteText  = noteTab.getNoteRowTitle();
+        assertEquals("Other note", newNoteText);
     }
 
     @Test
@@ -112,7 +118,7 @@ class CloudStorageApplicationTests {
         NoteTab noteTab = new NoteTab(driver);
         noteTab.addNote("New note", "New note");
         noteTab.deleteNote("New note", "New note");
-        assertNull(noteTab.getNoteRow("New note","New note"));
+        assertNull(noteTab.getNoteRow("New note", "New note"));
     }
 
     @Test
@@ -124,12 +130,10 @@ class CloudStorageApplicationTests {
         Home home = new Home(driver);
         home.openCredentialsTab();
         CredentialTab credentialTab = new CredentialTab(driver);
-        credentialTab.addCredential("www.udacity.com","CREDENTIAL",password);
+        credentialTab.addCredential("www.udacity.com", "CREDENTIAL", password);
 
-        WebElement credentialRow = credentialTab.getCredentialRow("www.udacity.com", "CREDENTIAL");
-        assertNull(credentialRow);
-        String credentialPassword = credentialTab.getCredentialPassword();
-        assertEquals(password,credentialPassword);
+        String savedPass = credentialTab.getCredentialPassword();
+        assertNotNull(password,savedPass);
     }
 
     @Test
@@ -142,11 +146,11 @@ class CloudStorageApplicationTests {
         Home home = new Home(driver);
         home.openCredentialsTab();
         CredentialTab credentialTab = new CredentialTab(driver);
-        credentialTab.addCredential("www.udacity.com","CREDENTIAL",password);
-        credentialTab.editCredential("www.udacity.com","CREDENTIAL","www.google.com","My USERNAME",newPassword);
-        String credentialPassword = credentialTab.getCredentialPassword();
-        assertNotNull(credentialTab.getCredentialRow("www.google.com", "My USERNAME"));
-        assertNotEquals(newPassword,credentialPassword);
+        credentialTab.addCredential("www.udacity.com", "CREDENTIAL", password);
+        credentialTab.editCredential("www.udacity.com", "CREDENTIAL", "www.google.com", "My USERNAME", newPassword);
+        String newCredentialText = credentialTab.getCredentialUsernameTitle();
+        assertEquals("My USERNAME", newCredentialText);
+
     }
 
     @Test
@@ -158,8 +162,8 @@ class CloudStorageApplicationTests {
         Home home = new Home(driver);
         home.openCredentialsTab();
         CredentialTab credentialTab = new CredentialTab(driver);
-        credentialTab.addCredential("www.udacity.com","CREDENTIAL","CREDENTIAL");
-        credentialTab.deleteCredential("www.udacity.com","CREDENTIAL");
+        credentialTab.addCredential("www.udacity.com", "CREDENTIAL", "CREDENTIAL");
+        credentialTab.deleteCredential("www.udacity.com", "CREDENTIAL");
 
         assertNull(credentialTab.getCredentialRow("www.google.com", "My USERNAME"));
 

@@ -68,15 +68,12 @@ public class CredentialTab {
         credentialUrlField.sendKeys(url);
         credentialUsernameField.sendKeys(username);
         credentialPasswordField.sendKeys(decryptedPassword);
-        new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(credentialSaveBtn)).click();
+        credentialSaveBtn.click();
     }
 
     public void editCredential(String oldUrl, String oldUsername, String newUrl, String newUsername, String newDecryptedPassword) {
-
-        WebElement credentialRow = getCredentialRow(oldUrl, oldUsername);
-
-        if (credentialRow == null) return;
-        credentialEditBtn.click();
+        new WebDriverWait(driver, 500).until(ExpectedConditions.elementToBeClickable(credentialEditBtn)).click();
+        new WebDriverWait(driver, 500).until(ExpectedConditions.elementToBeClickable(credentialSaveBtn));
         credentialUrlField.clear();
         credentialUsernameField.clear();
         credentialPasswordField.clear();
@@ -85,6 +82,12 @@ public class CredentialTab {
         credentialPasswordField.sendKeys(newDecryptedPassword);
         credentialSaveBtn.click();
     }
+
+
+    public String getCredentialUsernameTitle() {
+        return credentialUsernameField.getAttribute("value");
+    }
+
 
     public void deleteCredential(String url, String username) {
         WebElement credentialRow = getCredentialRow(url, username);
